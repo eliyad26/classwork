@@ -85,6 +85,7 @@ class Appointment {
 class Doctor extends Medical_Staff {
   specialization: string;
   availability: { [date: string]: string[] };
+  ageRange: { min: number; max: number };
   constructor(
     first: string,
     last: string,
@@ -94,11 +95,13 @@ class Doctor extends Medical_Staff {
     position: string,
     department: string,
     specialization: string,
-    availability: { [date: string]: string[] }
+    availability: { [date: string]: string[] },
+    ageRange: { min: number; max: number }
   ) {
     super(first, last, adress, age, D_id, position, department);
     this.specialization = specialization;
     this.availability = availability;
+    this.ageRange = ageRange;
   }
   show(): void {
     console.log(this);
@@ -209,7 +212,6 @@ class Hospital {
     console.log(scheduele);
   }
 }
-// Define your classes here (Person, Patient, Doctor, Appointment, Medical_Record, Hospital)
 
 // Create hospital
 const myHospital = new Hospital([], [], [], [], "My Hospital");
@@ -224,18 +226,11 @@ const doctor1 = new Doctor(
   "Doctor",
   "Internal Medicine",
   "Cardiologist",
-  { "2023-08-27": ["10:00", "14:00"], "2023-08-28": ["11:00", "15:00"] }
-);
-const doctor2 = new Doctor(
-  "Jane",
-  "Smith",
-  "456 Oak St",
-  40,
-  "D002",
-  "Doctor",
-  "Pediatrics",
-  "Pediatrician",
-  { "2023-08-27": ["09:00", "13:00"], "2023-08-28": ["12:00", "16:00"] }
+  {
+    "2023-08-27": ["10:00", "14:00"],
+    "2023-08-28": ["11:00", "15:00"],
+  },
+  { min: 30, max: 60 }
 );
 
 // Create patients
@@ -248,15 +243,6 @@ const patient1 = new Patient(
   "123-456-7890",
   []
 );
-const patient2 = new Patient(
-  "Bob",
-  "Williams",
-  "890 Maple St",
-  30,
-  "P002",
-  "987-654-3210",
-  []
-);
 
 // Create appointments
 const appointment1 = new Appointment(
@@ -264,23 +250,13 @@ const appointment1 = new Appointment(
   doctor1,
   "2023-08-27",
   "10:00",
-  " Scheduled"
-);
-const appointment2 = new Appointment(
-  patient2,
-  doctor2,
-  "2023-08-28",
-  "12:00",
-  "Done"
+  "Scheduled"
 );
 
 // Add doctors, patients, and appointments to the hospital
 myHospital.newdoctor(doctor1);
-myHospital.newdoctor(doctor2);
 myHospital.newpatient(patient1);
-myHospital.newpatient(patient2);
 myHospital.newappointment(appointment1);
-myHospital.newappointment(appointment2);
 
 // Use various methods from the Hospital class
 console.log("All Appointments:");
@@ -290,11 +266,11 @@ console.log("\nDoctor Appointments:");
 myHospital.show_doctor_appointments("D001");
 
 console.log("\nPatient Appointments:");
-myHospital.show_patient_appointments("P002");
+myHospital.show_patient_appointments("P001");
 
-console.log("\nDoctor by Specialization (Pediatrics):");
-const pediatricians = myHospital.show_doctor_by_specialization("Pediatrician");
-console.log(pediatricians);
+console.log("\nDoctor by Specialization (Cardiologist):");
+const cardiologists = myHospital.show_doctor_by_specialization("Cardiologist");
+console.log(cardiologists);
 
 console.log("\nCreating Medical Record:");
 myHospital.createMedicalRecord(patient1, doctor1, "Fever", "Rest and fluids");
@@ -302,5 +278,6 @@ myHospital.createMedicalRecord(patient1, doctor1, "Fever", "Rest and fluids");
 console.log("\nGetting Medical Records for Patient P001:");
 myHospital.getMedicalRecords("P001");
 
-console.log("\nGetting Doctor Schedule for Doctor D002:");
-myHospital.getDoctorSchedule("2023-08-28", "D002");
+console.log("\nGetting Doctor Schedule for Doctor D001:");
+const doctorAvailability = myHospital.getDoctorSchedule("2023-08-28", "D001");
+console.log("Doctor's availability on 2023-08-28:", doctorAvailability);
